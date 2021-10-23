@@ -128,7 +128,6 @@ socket.on('user-disconnected', nameuser => {
     appendMessage(`${nameuser} disconnected...`, "right");
 })
 
-
 socket.on('room-created', room => {
 
     const roomElement = document.createElement('div');
@@ -137,13 +136,31 @@ socket.on('room-created', room => {
     <span class="badge bg-warning text-dark">
                     ${room}
                 </span>
-    <a class="btn btn-sm btn-primary" href="/${room}" role="button">Join</a>
-    
+    <a class="btn btn-sm btn-success" href="/${room}" role="button">Join</a>
+    <button class="btn btn-sm btn-danger delete" value = "${room}">Delete</button>
     `;
     roomContainer.append(roomElement);
+    console.log("idhar hun")
+    let list = document.getElementsByClassName('roomList');
+    for (let i = 0; i < list.length; i++) {
+        console.log("socket ke andar hun");
+        if (list[i].children[2].value == room) {
+            console.log("aaya");
+            console.log(list[i].children[2])
+            list[i].children[2].addEventListener('click', deleteRoom)
+        }
+    }
+})
 
-
-
+socket.on('room-deleted', room => {
+    let list = document.getElementsByClassName('roomList');
+    for (let i = 0; i < list.length; i++) {
+        console.log(list[i]);
+        if (list[i].children[2].value == room) {
+            console.log("aaya");
+            roomContainer.removeChild(list[i]);
+        }
+    }
 })
 
 
@@ -192,6 +209,17 @@ function displayUser(users) {
         document.querySelector(".dropdown-menu").appendChild(ele);
     })
 }
+
+
+function deleteRoom(e) {
+    console.log("Yahan pe aaya hun")
+    socket.emit("delete-room", e.target.value);
+}
+
+
+
+
+
 
 
 
